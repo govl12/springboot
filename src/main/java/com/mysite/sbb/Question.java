@@ -13,7 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Getter
 @Setter
 @Entity	/* 자바 클래스를 DataBase에 테이블과 매핑된 클래스 . 
@@ -30,7 +32,7 @@ public class Question {
 	@Column(columnDefinition ="TEXT")
 	private String content;
 	
-	private LocalDateTime createDate;	
+	private LocalDateTime createDate;	//create_date : 
 	// 변수이름 작성 : 첫자 소문자 + 다음단어 대문자 (camelCase) => DB 컬럼명 : 소문자단어_대문자단어
 	
 	/*

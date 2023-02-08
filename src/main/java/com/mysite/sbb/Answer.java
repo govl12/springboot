@@ -24,12 +24,14 @@ public class Answer { //테이블이름 . DTO
 	private String content;
 	
 
-	private LocalDateTime createDate;
+	private LocalDateTime createDate; //DB저장명 : create_date
 	
 	
-	@ManyToOne  // Foreign key : 부모테이블의 PK, UK컬럼의 값을 참조해서 값을 할당
+	@ManyToOne // Foreign key 설정
+	// Foreign key : 부모테이블의 PK, UK컬럼의 값을 참조해서 값을 할당
 	// question = one, answer = many;
 	private Question question; //Foreign Key, Question 테이블(부모테이블)의 id컬럼(Primary key)를 참조 
+			//question_id
 	
 	
 	

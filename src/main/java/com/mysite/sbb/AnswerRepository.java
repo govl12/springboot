@@ -1,0 +1,15 @@
+package com.mysite.sbb;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AnswerRepository extends JpaRepository<Answer, Integer>{
+	//JPA에서 사용 가능한 메소드가 상속됨
+		//findAll()
+		//findById()
+		//save()
+		//delete()
+		
+
+	
+	
+}

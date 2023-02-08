@@ -19,7 +19,21 @@ https://projectlombok.org/download
 ===================================================
 3. 라이브러리 추가 
 
+===============================================
 
+
+
+
+실습 : 
+   - 새로운 프로잭트 생성후 서버 포트 변경 
+   - @Controller 어너테이션 을 사용해서 @GetMapping ("/hello") 요청시 메소드 출력 @ResponseBody
+   - Lombok의 어노테이션 사용. 
+   		- @Getter, @Setter, @toString, @noArgContructor, @allArgContructor, 
+   		- @RequredArgContructor 사용 
+   - devTools 를 사용하여 수정시 자동 반영 
+
+========================================================================
+JPA 사용을 위한 환경 구성 
 ===============================================
 JPA 사용을 위한 환경 구성
 1. H2 DataBase : 테스트 환경에서 많이 사용 .==> Oracle (서비스 환경)
@@ -69,4 +83,26 @@ JPA 사용을 위한 환경 구성
 		SQL의 CRUD( Insert, Update, Delete , Get)
 	- JPA를 사용해서 DB를 CRUD 할려면 Repository 인터페이스를 생성해야 한다.
 	- JPARepository를 상속해서 만들어야 한다.
-	 
+
+=========
+실습 0208 
+sbb2 패키지에서 진행 .
+H2 DataBase를 사용하고
+JPA Entity 클래스 실습, JPA 메소드를 사용해서 CRUD, Save(), FindAll(),
+
+아래 내용의 JPA Entity 클래스를 생성하세요
+테이블명 : users
+idx primary key, 자동증가 (1,1)
+name varchar(100)
+pass varchar(100)
+email varchar(200)
+regdate LocalDateTime
+cnt int
+
+임의의 값을 5개 insert
+넣은 값을 regdate 컬럼을 기준으로 내림차순 desc 정렬
+idx 3번의 name과 email주소를 수정
+idx 4번의 값을 삭제 
+
+
+
