@@ -104,5 +104,27 @@ cnt int
 idx 3번의 name과 email주소를 수정
 idx 4번의 값을 삭제 
 
+===========================
+트랜잭션(TRANSACTION) : 일(작업)을 처리하는 최소단위
+트랜잭션이 시작되면 트랜잭션 완료까지 lock이 걸림. 
+트랜잭션이 발생되면 SQL LOG에 모두 기록됨
+DMSL문서에 트랜잭션이 발생( insert, update,delete ) 
+트랜잭션이 발생되고 commit 되기 전까지는 ram에만 적용
+rollback ( 트랜잭션 발생시점으로 되돌림)
+commit ( db에 영구적으로 적용)
+oracle  : insert,update, delte 구문이 발생되면 자동으로 트랜잭션 시작 
+commit;
+mssql, mysql : 자동 커밋 트랜잭션 (statement, preparedstatment)
+백업시점이 아니라 오류가 발생된 시점으로 롤백할 수 있음
+all or nothing : 전부 완료되게 하거나 아니면 원점으로 되돌려줘야 한다.
 
+===========
+실습 0209
+프로젝트 sbb2 
+- users 에 저장된 레코드를 출력(View페이지)
+usersRepository를 controller에서 생성자 주입 
+
+client 요청 : http://localhost:포트번호(9696)/user_list
+접속시, 레코드 출력~! 
+view page : users_list.html 
 

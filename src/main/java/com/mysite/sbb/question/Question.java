@@ -1,7 +1,9 @@
-package com.mysite.sbb;
+package com.mysite.sbb.question;
 	
 import java.time.LocalDateTime;	//자신의 시스템이 위치한 장소(국가)의 시간 설정 
 import java.util.List;
+
+import com.mysite.sbb.answer.Answer;
 
 //persistence : JPA에 사용된 어노테이션 
 import jakarta.persistence.CascadeType;
