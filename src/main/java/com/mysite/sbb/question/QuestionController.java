@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -38,7 +39,10 @@ public class QuestionController {
 	
 	
 	//생성자를 통한 의존성 주입 <== 권장하는 방식
-	private final QuestionRepository questionRepository ;
+		//Controller 에서 직접 Repository 접근하지 않고 Service를 접근하도록 함.
+	//private final QuestionRepository questionRepository ;
+	private final QuestionService questionService;
+	
 	
 	
 	@GetMapping("/question/list") //http://localhost:9292/question/list
@@ -49,16 +53,33 @@ public class QuestionController {
 		
 		//2. 비즈니스 로직 처리 
 		List<Question> questionList = 
-				this.questionRepository.findAll();
+			//	this.questionRepository.findAll();
+				this.questionService.getList();
 		//3. 뷰(view) 페이지로 전환
 			//Model : 뷰페이지로 서버의 데이터를 담아서 전송하는 객체(과거 - Session, Application)
 		model.addAttribute("questionList", questionList);
+							//(변수, 객체)
 		
 
 		return "question_list";		//ResponseBody가 없을 경우, return 에 적힌 이름의 html(뷰페이지)가 출력됨. 
 		
 	}
 
+	//상세 페이지를 처리하는 메소드 : /question/detail/1
+	@GetMapping(value = "/question/detail/{id}")
+	public String detail(Model model, @PathVariable("id") Integer id) {
+		
+		//서비스 클래스의 메소드 호출 : 상세페이지 보기
+		Question q = 
+		this.questionService.getQuestion(id);
+		
+		
+		//Model 객체에 담아서 클라이언트에게 전송
+		model.addAttribute("question", q);
+		
+		return "question_detail"; //template : question_detail.html
+		
+	}
 	
 
 }

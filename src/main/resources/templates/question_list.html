@@ -10,26 +10,33 @@
 	<table>
 		<tr>
 		<th>제목</th>
-		<th>내용</th>
 		<th>작성일시</th>
 		</tr>
 		
 		<!-- 방법1. -->
-		<!-- 타임리프를 사용해서 루프 돌린후 출력
-		<tr th:each = "question:${questionList}">-- 모델 변수에 담긴 questionList 
-			<td th:text = "${question.subject}"></td>
-			<td th:text = "${question.content}"></td>
+		<!-- 타임리프를 사용해서 루프 돌린후 출력-->
+		<!-- -- 모델 변수에 담긴 questionList  -->
+		<!--
+		<tr th:each = "question:${questionList}">
+			<td>
+				<a th:href="@{|/question/detail/${question.id}|}" th:text = "${question.subject}"></a>
+			</td>
 			<td th:text = "${question.createDate}"></td>
 		</tr>
-	 -->
-	 
-	 <!-- 방법2. -->
+-->
+	 		<!-- 타임리프 문법 
+	 		1. @{} : 링크를 처리
+	 		2. th : 
+	 		3. | String + 변수 | : 문자열과 변수를 연결
+	 		4. ${} : 서버의 변수를 처리? -->
+	 		
+	 		
+	 <!-- 방법2.	 -->
 		 <tr th:each = "question:${questionList}">
-		
-			<td>[[${question.subject}]]</td>
-			<td>[[${question.content}]]</td>
+			<td><a th:href="@{|/question/detail/${question.id}|}">[[${question.subject}]]</a></td>
 			<td>[[${question.createDate}]]</td>
 		</tr>
+		
 	</table>
 </body>
 </html>

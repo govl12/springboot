@@ -27,7 +27,55 @@ class SbbApplicationTests {
 	@Autowired	//객체 자동 주입(DI), JPA의 메소드를 사용 , findAll(), findById(), save(), delete()
 	private  AnswerRepository answerRepository; 
 	
-	/*하나의 질문에 여러개의 답변 찾기 */
+	
+	/*Answer 테이블에 더미 데이터 입력 */
+	
+	@Test
+	public void insertAnswer() {
+		Question q = new Question();
+		Answer a = new Answer();
+		
+		//Question 객체 질문에 대한 값을 가지고 와서 answer question 필드에 넣어준다.
+		Optional<Question> op = 
+		this.questionRepository.findById(2);
+		q = op.get();
+		
+		
+		
+		a.setContent("2번 글에 대한 답변 입니다. - 3");
+		a.setCreateDate(LocalDateTime.now());
+		a.setQuestion(q);
+		
+		this.answerRepository.save(a);
+		
+	}
+	
+	
+	
+	
+	
+	/* question 테이블에 for문을 사용해서 더미값 1000개 insert
+	@Test
+	public void insert1000() {
+		Question q = null;
+		
+		//for문을 사용해서 레코드 1000개 insert
+		for (int i = 1 ; i <=1000 ; i++) {
+			q = new Question();
+			q.setSubject("제목 : "+i+"번째");
+			q.setContent(i+"번째 글의 내용");
+			q.setCreateDate(LocalDateTime.now());
+		
+			this.questionRepository.save(q);
+			
+			
+			
+		}
+		
+	} */
+	
+
+	/*하나의 질문에 여러개의 답변 찾기 
 	
 	@Transactional // 아래의 메소드가 하나의 트랜젝션으로 작동되도록 설정(Test에서만 사용)
 	@Test
@@ -44,7 +92,7 @@ class SbbApplicationTests {
 			
 			System.out.println(q.getId());
 			System.out.println(q.getSubject());
-			
+	
 		//2. 끄집어낸 객체의 q.getAnswerList(); <== 끄집어낸 객체의 답변글을 얻어온다.
 		//Question 객체의 answerList컬럼은 List<answer>를 저장 하고 있음.
 			List<Answer> all = q.getAnswerList();	
@@ -62,7 +110,7 @@ class SbbApplicationTests {
 	}
 	
 	
-	
+			 */	
 	
 	
 	/* Answer 테이블 중 레코드 하나 가져오기
