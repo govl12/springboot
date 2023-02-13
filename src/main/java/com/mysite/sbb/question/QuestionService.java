@@ -1,5 +1,6 @@
 package com.mysite.sbb.question;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ import com.mysite.sbb.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
-
+//로직을 서비스에서 다 적고, 컨트롤러에서는 서비스에서 작성한 메소드 호출.
 @RequiredArgsConstructor	// DI(생성자에 객체 주입)
 @Service
 public class QuestionService {
@@ -43,9 +44,17 @@ public class QuestionService {
 			throw new DataNotFoundException("요청한 레코드를 찾지 못했습니다.");
 			
 		}
-
-
 	}
-	
+	public void create(String subject, String content) {
+		//Question 객체를 생성 후 setter주입
+		Question q = new Question();
+				q.setSubject(subject);
+				q.setContent(content);
+				q.setCreateDate(LocalDateTime.now());
+				
+				//Repository save ()ㅁ소드에 Question 객체 저장
+				this.questionRepository.save(q);	//DB에 INSERT 더
+				
+	}
 	
 }

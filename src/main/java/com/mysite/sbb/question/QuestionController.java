@@ -4,11 +4,16 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mysite.sbb.answer.AnswerForm;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -67,12 +72,12 @@ public class QuestionController {
 
 	//상세 페이지를 처리하는 메소드 : /question/detail/1
 	@GetMapping(value = "/question/detail/{id}")
-	public String detail(Model model, @PathVariable("id") Integer id) {
+	public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
 		
 		//서비스 클래스의 메소드 호출 : 상세페이지 보기
 		Question q = 
 		this.questionService.getQuestion(id);
-		
+		       
 		
 		//Model 객체에 담아서 클라이언트에게 전송
 		model.addAttribute("question", q);
@@ -81,5 +86,28 @@ public class QuestionController {
 		
 	}
 	
+	// 둘다 써야되는거, 하나만 써야되는거 무슨차이?
+	@GetMapping("/question/create")// 매개변수X. 오버로딩. 로직 필요 없고 FORM(뷰페이지)으로 이동
+	public String questionCreate(QuestionForm questionForm){
+		return "question_form";
+	}
+	
+	@PostMapping("/question/create")
+	public String questionCreate(	//매개변수 2개
+			// @RequestParam String subject, @RequestParam String content
+		@Valid QuestionForm questionForm, BindingResult bindingResult
+			) {
+				if (bindingResult.hasErrors()) {//subject, content가 비어있을 때 
+					return "question_form";
+				}
+				
+		
+		//로직 작성(Service에서 로직을 만들어서 작동)
+		//this.questionService.create(subject, content);
+				
+	this.questionService.create(questionForm.getSubject(), questionForm.getContent());
+		//값을 DB에 저장 후 List페이지로 리다이렉트 (질문 목록으로 이동
+		return "redirect:/question/list";
+	}
 
 }

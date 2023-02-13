@@ -30,6 +30,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	
+	//Spring에서 제공해주는 유효성 검사 라이브러리 : form에서 빈값이나 글자 수 제한
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	
 	
 }

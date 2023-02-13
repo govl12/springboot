@@ -161,4 +161,13 @@ view page : users_detail.html
 view page : users_insert.html(Form) 
 Client 요청 : http://localhost:9797/users_insert
 
+======================================
+//Spring Framework 를 사용한 폼 태그 내의 유효성 검사
 
+1. 라이브러리 등록 : build.gradle에 등록 
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+2. 유효성 검사 할 클래스 생성 ( QuestionForm.java), @NotEmpty(message="오류메세지")
+ 	@Getter
+ 	@Setter
+ 	
+ 	유효성 검사 필드 : QuestionForm 클래스 내부의 subject, content. 

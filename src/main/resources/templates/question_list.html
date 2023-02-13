@@ -1,22 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<h1>Question 테이블의 list를 출력하는 view 페이지</h1>
-	<hr>
-	<table>
-		<tr>
-		<th>제목</th>
-		<th>작성일시</th>
-		</tr>
-		
-		<!-- 방법1. -->
-		<!-- 타임리프를 사용해서 루프 돌린후 출력-->
-		<!-- -- 모델 변수에 담긴 questionList  -->
-		<!--
+<!--  현재폴더의 layout.html 을 불러옴. -->
+<html layout:decorate="~{layout}">
+
+<!--div박스 안의 내용을 layout.html의 content에 집어 넣ㄴ음. -->
+<div layout:fragment="content" class="container my-3">
+	<!--  bootstrap 내부에서 정의된 이름으로 호출하는것. -->
+	<table class="table">
+		<thead class="table-dark"> <!--  제목을 처리 : thead -->
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>작성일시</th>
+			</tr>
+		</thead>
+
+		<tbody> <!-- 테이블의 내용을 출력블록  -->
+			<!-- 방법1. -->
+			<!-- 타임리프를 사용해서 루프 돌린후 출력-->
+			<!-- -- 모델 변수에 담긴 questionList  -->
+			<!--
 		<tr th:each = "question:${questionList}">
 			<td>
 				<a th:href="@{|/question/detail/${question.id}|}" th:text = "${question.subject}"></a>
@@ -24,19 +25,24 @@
 			<td th:text = "${question.createDate}"></td>
 		</tr>
 -->
-	 		<!-- 타임리프 문법 
+			<!-- 타임리프 문법 
 	 		1. @{} : 링크를 처리
 	 		2. th : 
-	 		3. | String + 변수 | : 문자열과 변수를 연결
+	 		3. | String + 변수 | : 문자열(주소값)과 변수를 연결 - @{|/주소값/${변수값}|}
 	 		4. ${} : 서버의 변수를 처리? -->
-	 		
-	 		
-	 <!-- 방법2.	 -->
-		 <tr th:each = "question:${questionList}">
-			<td><a th:href="@{|/question/detail/${question.id}|}">[[${question.subject}]]</a></td>
-			<td>[[${question.createDate}]]</td>
-		</tr>
-		
+
+
+			<!-- 방법2.	 -->
+			<tr th:each="question, loop :${questionList}">
+				<td th:text=${loop.count}>번호</td>
+				<td><a th:href="@{|/question/detail/${question.id}|}">[[${question.subject}]]</a></td>
+				<td>[[${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}]]</td>
+			</tr>
+		</tbody>
 	</table>
-</body>
+	<!-- 새글 등록 버튼 -->
+	
+	<a th:href="@{/question/create}" class="btn btn-primary">질문 작성</a>
+	
+</div>
 </html>
