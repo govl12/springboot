@@ -1,7 +1,6 @@
 package com.mysite.sbb.question;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mysite.sbb.answer.AnswerForm;
 
@@ -50,24 +48,37 @@ public class QuestionController {
 	
 	
 	
-	@GetMapping("/question/list") //http://localhost:9292/question/list
-	@PostMapping("/question/list")	//Form태그의 method=post action= "/question/list
+//	@GetMapping("/question/list") //http://localhost:9292/question/list
+//	@PostMapping("/question/list")	//Form태그의 method=post action= "/question/list
 //	@ResponseBody	//요청(return)을 브라우저에 출력하도록 해줌. 
-	public String list(Model model) {
+	//public String list(Model model) {
 		//1. 클라이언트 요청 정보 : http://localhost:9696/question/list
 		
 		//2. 비즈니스 로직 처리 
-		List<Question> questionList = 
+//		List<Question> questionList = 
 			//	this.questionRepository.findAll();
-				this.questionService.getList();
+//				this.questionService.getList();
 		//3. 뷰(view) 페이지로 전환
 			//Model : 뷰페이지로 서버의 데이터를 담아서 전송하는 객체(과거 - Session, Application)
-		model.addAttribute("questionList", questionList);
+//		model.addAttribute("questionList", questionList);
 							//(변수, 객체)
+//		return "question_list";		//ResponseBody가 없을 경우, return 에 적힌 이름의 html(뷰페이지)가 출력됨. 
+//	}
+	
+	//2월 14일 페이징 처리를 위해 수정됨
+	@GetMapping("/question/list")
+	public String list(Model model,@RequestParam(value="page", defaultValue="0") int page) {
 		
-
-		return "question_list";		//ResponseBody가 없을 경우, return 에 적힌 이름의 html(뷰페이지)가 출력됨. 
+		//비즈니스 로직 처리 :
+		Page<Question>paging = 
+			this.questionService.getList(page);
 		
+		//model객체에 결과로 받은 paging 객체를 Client로 전송
+		model.addAttribute("paging", paging);
+		
+		
+		
+		return "question_list";
 	}
 
 	//상세 페이지를 처리하는 메소드 : /question/detail/1
@@ -85,6 +96,9 @@ public class QuestionController {
 		return "question_detail"; //template : question_detail.html
 		
 	}
+	
+	
+	
 	
 	// 둘다 써야되는거, 하나만 써야되는거 무슨차이?
 	@GetMapping("/question/create")// 매개변수X. 오버로딩. 로직 필요 없고 FORM(뷰페이지)으로 이동

@@ -10,7 +10,7 @@ public class IndexController {
 	@GetMapping("/") 		//http://localgost:9696/ 
 	public String index() {
 		
-		return "index";
+		return "redirect:/question/list";
 		
 	}
 }

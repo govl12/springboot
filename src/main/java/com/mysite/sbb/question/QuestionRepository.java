@@ -2,6 +2,8 @@ package com.mysite.sbb.question;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
@@ -63,6 +65,12 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 	
 	//delete : delete()
 	
+	//페이징을 처리하기 위한 메소드 생성
+	//select * from question 
+	//pageable 변수에 page, 레코드 수를 넣어주면 자동으로 처리 됨~( 보통 10개)
+	//JPA에서 페이지 번호는 0번부터 시작
+	//검색하여 출력할 레코드 수를 JPA에 알려주면 JPA가 전체 레코드(1000)/ 설정한 레코드수(10) = 100페이지 나옴.
+	Page<Question> findAll(Pageable pageable);
 	
 	
 	
