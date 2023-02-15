@@ -33,6 +33,11 @@ dependencies {
 	//Spring에서 제공해주는 유효성 검사 라이브러리 : form에서 빈값이나 글자 수 제한
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	
+	//스프링 시큐리티 사용(2.15)
+	//라이브러리를 설치하는 순간 프로젝트의 모든 내용은 접근을 인증받아야 접근이 가능하다.
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+	
 	
 }
 

@@ -14,8 +14,10 @@
 	<!-- 최상단 네비게이션바(nav bar) -->
 	<!-- 외부의 navbar.html 임포트 -->
 	<nav th:replace="~{navbar::navbarFragment}"></nav>
+	
 	<!--  기본 템플릿에 삽입될 내용, 끼워넣을 내용.. - Start --> 
 	<th:block layout:fragment="content"></th:block> <!--  기본 템플릿에 삽입될 내용 - END -->
+	
 	<!--  부트 스트랩 javaScript 임포트 -->
 	<script th:src="@{/bootstrap.min.js}"></script>
 </body>
