@@ -3,6 +3,7 @@ package com.mysite.sbb.answer;
 import java.time.LocalDateTime;
 
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,6 +35,11 @@ public class Answer { //테이블이름 . DTO
 	private Question question; //Foreign Key, Question 테이블(부모테이블)의 id컬럼(Primary key)를 참조 
 			//question_id
 	
+	//게시글의 작성자(질문글의 작성자)
+	//Foreign Key, SiteUser의 값을 참조 .. 
+	@ManyToOne //여러개의 질문을 한사람이 작성할 수 있으므로 
+	private SiteUser author;
 	
-	
+	//글 수정 일시 저장
+	private LocalDateTime modifyDate;
 }

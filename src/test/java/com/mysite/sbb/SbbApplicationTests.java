@@ -14,6 +14,8 @@ import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerRepository;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.question.QuestionRepository;
+import com.mysite.sbb.question.QuestionService;
+import com.mysite.sbb.user.UserService;
 
 import jakarta.transaction.Transactional;
 
@@ -27,9 +29,26 @@ class SbbApplicationTests {
 	@Autowired	//객체 자동 주입(DI), JPA의 메소드를 사용 , findAll(), findById(), save(), delete()
 	private  AnswerRepository answerRepository; 
 	
+	@Autowired
+	private QuestionService questionService;
+	
+	
+	
+	//0216 질문작성자 테스트 
+	@Test
+	void writterTest() {
+		for (int i = 1; i<=300; i++) {
+			
+			String subject = String.format("테스트데이터입니다: [%03d]", i);
+			
+			String content = "내용 없음";
+			
+			this.questionService.create(subject, content, null);
+					}
+	}
 	
 	/*Answer 테이블에 더미 데이터 입력 */
-	
+	/*
 	@Test
 	public void insertAnswer() {
 		Question q = new Question();
@@ -50,7 +69,7 @@ class SbbApplicationTests {
 		
 	}
 	
-	
+	*/
 	
 	
 	

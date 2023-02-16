@@ -76,4 +76,12 @@ public class UserController {
 		
 	}
 
+	//@postmapping 방식의 메소드는 스프링 시큐리티가 대신 처리함.
+	@GetMapping("/login")
+	public String login() {
+		
+		return "login_form";
+	}
+	
+	
 }

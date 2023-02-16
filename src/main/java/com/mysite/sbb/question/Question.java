@@ -4,6 +4,7 @@ import java.time.LocalDateTime;	//자신의 시스템이 위치한 장소(국가
 import java.util.List;
 
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.user.SiteUser;
 
 //persistence : JPA에 사용된 어노테이션 
 import jakarta.persistence.CascadeType;
@@ -12,6 +13,7 @@ import jakarta.persistence.Entity;	//JPA에서 적용된 어노테이션
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,9 +49,12 @@ public class Question {
 	
 		//question.getAnswerList();
 	
+	//게시글의 작성자(질문글의 작성자)
+	@ManyToOne //여러개의 질문을 한사람이 작성할 수 있으므로 
+	private SiteUser author;
 	
-	
-	
+	//글 수정 일시 저장
+	private LocalDateTime modifyDate;
 	
 
 }
