@@ -4,7 +4,6 @@ import java.security.Principal;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.mysite.sbb.answer.AnswerForm;
@@ -23,7 +21,6 @@ import com.mysite.sbb.user.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.asm.Advice.This;
 
 @RequiredArgsConstructor // final 필드의 생성자를 자동으로 만들어서 생성자를 통해서 의존성 주입.
 @Controller
@@ -75,15 +72,19 @@ public class QuestionController {
 //		return "question_list";		//ResponseBody가 없을 경우, return 에 적힌 이름의 html(뷰페이지)가 출력됨. 
 //	}
 
-	// 2월 14일 페이징 처리를 위해 수정됨
+	// 2월 14일 페이징 처리를 위해 수정됨 |+ 02017 수정됨 (검색어 kw 파라미터 추가)
 	@GetMapping("/list")
-	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page, 
 
+		@RequestParam(value = "kw", defaultValue="") String kw) {
+		
 		// 비즈니스 로직 처리 :
-		Page<Question> paging = this.questionService.getList(page);
+		Page<Question> paging = this.questionService.getList(page, kw);
 
 		// model객체에 결과로 받은 paging 객체를 Client로 전송
 		model.addAttribute("paging", paging);
+		
+		model.addAttribute("kw", kw);
 
 		return "question_list";
 	}
@@ -117,7 +118,11 @@ public class QuestionController {
 		if (bindingResult.hasErrors()) {// subject, content가 비어있을 때
 			return "question_form";
 		}
-
+		
+		// 현재 로그온 한 사용자 정보를 확인해보기
+		
+		System.out.println("현재 로그온한 사용자 정보 : " + principal);
+		
 		// 로직 작성(Service에서 로직을 만들어서 작동)
 		// this.questionService.create(subject, content);
 
@@ -195,6 +200,22 @@ public class QuestionController {
 		this.questionService.delete(question);
 
 		return "redirect:/";
+	}
+	
+	//추천 버튼을 눌렀을때 호출되는 url 처리하는 controller
+	
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/vote/{id}")
+	public String questionVote(Principal principal, @PathVariable("id") Integer id) {
+		
+		Question question = this.questionService.getQuestion(id);
+		
+		SiteUser siteUser = this.userService.getUser(principal.getName());
+		
+		this.questionService.vote(question, siteUser);
+		
+		return String.format("redirect:/question/detail/%s", id);
+		
 	}
 	
 }

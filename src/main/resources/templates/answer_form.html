@@ -4,6 +4,8 @@
 
 	<h5 class="my-3 border-bottom pb-2">답변 수정</h5>
 	
+	<!-- form에서 action이 빠져있음. url에서 uri를 action으로 처리해서 controller를 호출하게 됨.
+	..쓰다 말았음ㅎㅎ; -->
 	<form th:object="${answerForm}" method ="post">
 	
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

@@ -33,22 +33,22 @@ public class AnswerService {
 	}*/
 	
 		//답변 저장 시 작성자 저장
-		public Answer create(Question question, String content, SiteUser author) {
-			
-			Answer answer = new Answer();
-			
-			answer.setContent(content);
-			
-			answer.setCreateDate(LocalDateTime.now());
-			
-			answer.setQuestion(question);
-			
-			answer.setAuthor(author);
+	public Answer create(Question question, String content, SiteUser author) {
+		
+		Answer answer = new Answer();
+		
+		answer.setContent(content);
+		
+		answer.setCreateDate(LocalDateTime.now());
+		
+		answer.setQuestion(question);
+		
+		answer.setAuthor(author);
 
-			this.answerRepository.save(answer);
-			
-			return answer;
-		}
+		this.answerRepository.save(answer);
+		
+		return answer;
+	}
 		
 		//답변글 조회
 		
@@ -69,6 +69,7 @@ public class AnswerService {
 		//답변글 수정
 		public void modify(Answer answer, String content) {
 			
+			System.out.println("기존의 답변을 수정함.");
 			answer.setContent(content);
 			
 			answer.setModifyDate(LocalDateTime.now());
@@ -84,4 +85,16 @@ public class AnswerService {
 			this.answerRepository.delete(answer);
 		}
 	
+		//답변글 추천 서비스
+		
+		public void vote(Answer answer, SiteUser siteUser) {
+			
+			answer.getVoter().add(siteUser);
+			
+			this.answerRepository.save(answer);
+			
+			
+			
+			
+		}
 }
