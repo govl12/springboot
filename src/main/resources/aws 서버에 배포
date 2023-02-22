@@ -1,0 +1,71 @@
+
+// ls -l : 자세한 정보를 출력해주는 명령어
+폴더 / 파일 / 링크 , 퍼미션(권한), 소유주, 그룹, 언제, 용량 
+
+drwxr-x--- 4 ubuntu ubuntu 4096 Feb 22 10:03 ubuntu
+
+d: 폴더
+- : 파일
+l : 링크
+
+rwxrwxrwx
+
+r : 읽기 권한 : 4
+w : 쓰기 권한 : 2
+x : 실행 권한 : 1
+
+
+7 : rwx (읽기,쓰기,실행)
+6 : rw- (읽기,쓰기)
+5 : r-w (읽기,실행)
+4 : r-- (읽기)
+3 : -wx (쓰기,실행)
+2 : -w- (쓰기)
+1 : --x (실행)
+0 : ---
+
+
+			rwx			/			r-x			/		---			
+(소유주 권한 : 계정(ubuntu)) / (그룹 권한 : 그룹(ubuntu)) / (기타 사용자 권한 : 소유주 x, 그룹 x ) 
+
+
+//chmod : 퍼미션 수정
+
+chmod 777 aaa.txt 
+-rwxrwxrwx 1 ubuntu ubuntu 0 Feb 22 10:48 aaa.txt
+
+chown : 소유주와 그룹 변경
+sudo chown root(계정).root(그룹) aaa.txt
+-rwxrwxrwx 1 root root 0 Feb 22 10:49 aaa.txt
+
+소유주 u
+그룹 g
+기타 o
+
+
+모든 (소유주, 그룹, 기타 ) :a 
+======
+
+80번 포트에서 서비스 작동 :ㅣ 
+
+
+
+:wq
+
+sudo chmod +x stop.sh // 실행 권한부여
+
+start.sh 수정 : 실행 시 application-prod.properties 실행
+=======
+#!/bin/bash
+
+JAR=sbb-0.0.2.jar
+LOG=/home/ubuntu/sbb/sbb.log
+
+nohup java -Dspring_profiles_active=prod =jar $JAR > $LOG 2>&1 &
+-> export spring.profiles.active=prod	
+-> nohup java -jar $JAR > $LOG 2>&1 &
+
+
+//80번 포트에서 서비스 작동 : 루트 권한으로 실행해야 한다 . (sudo)
+sudo java -Dserver.port=80 -Dspring.properties.active=prod -jar sbb-0.0.2-SNAPSHOT.jar &
+ : 문제 많이 생김;; 뭐야ㅐ 이미 풀었늗넹;; 

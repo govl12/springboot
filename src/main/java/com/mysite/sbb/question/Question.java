@@ -63,6 +63,11 @@ public class Question {
 		//Set : 중복을 허용하지 않는 자료형. 
 		//하나의 질문에 여러 사람이 추천할 수 있고, 한 사람이 여러개의 질문을 추천할 수 있음. 대등한관계 ManyToMany
 	@ManyToMany
-	Set<SiteUser> voter;
+	Set<SiteUser> voter;	//한명의 사용자가 여러질문에 투표할 수 있다.
+					//ManyToMany : 하나의 질문에 여러명의 사용자가 투표할 수 있다. 
 	
+	
+	//List : 방의 번호(Index)를 가지고 중복된 값을 저장할 수 있음.
+	//Set : 중복된 값을 넣을 수 없는 자료형.
+			// set은 방번호를 가지지 안흔다.
 }

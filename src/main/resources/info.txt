@@ -231,6 +231,42 @@ SBB 서비스 개발 117~158p
 13 마크다운
 14 검색
 
+========
+검색 기능 사용
+- 제목으로 검색 : Question <subject>
+	select * from question where subject like '%내용%'
+- 내용으로 검색 : Question <content>
+	select * from question where content like '%내용%'
+- 사용자 이름으로 검색 : SiteUser<Username>
 
+- 답변으로 검색 : Answer<Content>
+	select  from answer where content like '%내용%'
 
+-- answer 테이블과 site_user 테이블을 inner join 해서 content 컬럼의 값이 '스프링'이 적용된것.
+	select* from answer a join site_user s on a.author_id = s.id where content like'%스프링%'
+-- 하나의 검색 변수 값으로 여러 테이블의 컬럼을 검색 함(Join)
+	select 
+	distinct q.id
+	q.author_id
+	q.content,
+	q.subject,
+	q.mody_date
+	q.create_date
 	
+	from question q left outer join site_user u1 on q.author_id = u1.id
+	
+	
+
+	select from question q left outer join
+		site user u1 on q.author id = u1.id 
+			left outer join answer a on q.id = a.question_id
+				left outer join site_user u2 on a.author_id = u2.id
+
+				'
+				
+				q.subject like
+				or q content like
+				or a.content like
+				or u1.username lik - question author_id
+				or u2.username like - answer author _id
+				
