@@ -1,3 +1,4 @@
+------------------
 
 // ls -l : 자세한 정보를 출력해주는 명령어
 폴더 / 파일 / 링크 , 퍼미션(권한), 소유주, 그룹, 언제, 용량 
@@ -69,3 +70,436 @@ nohup java -Dspring_profiles_active=prod =jar $JAR > $LOG 2>&1 &
 //80번 포트에서 서비스 작동 : 루트 권한으로 실행해야 한다 . (sudo)
 sudo java -Dserver.port=80 -Dspring.properties.active=prod -jar sbb-0.0.2-SNAPSHOT.jar &
  : 문제 많이 생김;; 뭐야ㅐ 이미 풀었늗넹;; 
+ 
+ ----
+ IANA : 전 세계의 IP를 관리하는 단체 
+
+IP : 인터넷 망의 주소 체계 . 
+
+사설(Private) IP : 회사 내부망에서만 사용되는 IP 
+
+   - 누구나 사용할 수 있도록 허용 IP 대역 , 
+   - 적은 공인IP로 많은 시스템을 인터넷에 연결 (NAT) 
+   - 보안을 강화하기 위해 
+	A Class : 10.x.x.x 
+	B Class : 172.16.x.x ~ 172.31.x.x 
+	C Class : 192.168.x.x 
+
+공인(Public) IP  : 인터넷 망에서 사용되는 IP , 서버(서비스) 
+
+// 
+프롬프트 형식 : 
+ubuntu@srv1 ~$ 
+계정명@서버명 현재위치폴더
+$ : 일반 계정 
+# : root 계정 
+
+ip addr  : IP Address 확인 
+
+//서버 이름 변경 
+sudo hostnamectl set-hostname srv1         : 컴퓨터 이름을 srv1 로 변경후 리부팅이 필요함. 
+
+sudo reboot 
+
+// 시스템의 시간 셋팅 :     UTC 시간대로 셋팅 ==> 한국 시간대로 변경 
+	// 로그를 확인시, 에러, 경고 , 사용자 접속 정보 
+
+date      : 현재 시스템의 시간을 출력 
+sudo ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime 		//서울시간대로 변경 (UTC ==> KST (서울 시간대) 
+
+//자바의 JDK 설치 ( OpenJDK 17) 
+java	//로컬에 jdk 설치 확인 
+sudo apt update 			//설치전 apt 레파지토리 업데이트 
+sudo apt install openjdk-17-jre-headless	//open JDK 17 설치 (인터넷의 레파지토리를 사용해서 설치 ) 
+java -version         //Open JDK 설치 확인 
+
+//프로잭트를 업로드할 폴더를 생성 
+cd ~ 
+sudo mkdir sbb		//sbb 폴더를 생성 : 프로잭트 파일을 업로드 위치 
+ls -l   			// 소유주 권한을 확인 
+sudo chown ubuntu.ubuntu sbb     		// sbb 폴더의 소유주를 ubuntu 로 변경 
+ls -l 
+
+// 프로잭트 배포 : jar   : 프로잭트의 소스(*.java)파일을 컴파일(*.class)해서 전체 컴파일된 class파일만 묶는다. jar 
+	// jar     : 내장 톰켓(스프링 부트에서 자동으로 적용) 을 사용. view 페이지로 타임리프 를 사용 
+	// war   : 외장 톰켓 (자신이 등록한 톰켓을 사용 ) , view 페이지로 JSP를 사용 
+
+C:\Users\hi\Documents\workspace-STS4\sbb\build\libs\sbb-0.0.1-SNAPSHOT.jar
+
+sbb-0.0.1-SNAPSHOT.jar 파일을 서버로 업로드  :  Local ==> Remote (Server) 로 파일을 전송 : FTP(TCP 21)  프로그램 사용. 
+
+SFTP (Security FTP ) : client 와 서버로 데이터 전송시 암호화 해서 전송 : TCP 22  (SSH , SFTP ) 
+    - 원격서버의 접속 폴더 : 계정의 홈폴더에 접속 : /home/ubuntu  
+
+//jar 파일의 압축을 푼다. (sbb 폴더로 이동후) 
+cd ~/sbb 
+java -jar sbb-0.0.1-SNAPSHOT.jar		//jar 파일의 압축을 푼다. 
+
+//AWS 의 방화벽 포트 오픈  ( TCP 80, TCP 9292 )     TCP 22  : SSH, SFTP 
+
+http://서버IP:9292
+
+
+// SSH 접속을 중지 하더라도 서비스가 중지 되지 않도록 쉘 스크립스를 생성 해서 실행 
+cd ~/sbb
+vi start.sh
+=========================
+#!/bin/bash
+
+JAR=sbb-0.0.1-SNAPSHOT.jar
+LOG=/home/ubuntu/sbb/sbb.log
+
+nohup java -jar $JAR > $LOG 2>&1 &
+
+=========================
+// 저장후 빠져나오기 : esc (명령모드)    :wq 
+
+//스크립트를 실행 할 수 있는 권한 부여 (x) 
+sudo chmod +x start.sh
+ls -l 
+-rwxrwxr-x 1 ubuntu ubuntu      105 Feb 21 14:57 start.sh
+
+//쉘 스크립트 실행 
+./start.sh 
+
+// 서비스 중지 스크립트 생성 
+ps -ef | grep java | grep sbb		//RAM에 작동중인 프로세스 확인 ( PID ) , PID (프로세스의 고유번호) 
+sudo kill -9 3732
+
+vi stop.sh 
+=========================================
+#!/bin/bash
+
+SBB_PID=$(ps -ef | grep java | grep sbb | awk '{print $2}')
+
+if [ -z "$SBB_PID" ];
+then
+    echo "SBB is not running"
+else
+    kill -9 $SBB_PID
+    echo "SBB stopped."
+fi
+============================================
+:wq         
+
+sudo chmod +x stop.sh 	//실행 권한 부여 
+
+
+
+start.sh 수정 : 실행시 application-prod.properties 실행 
+==============================
+#!/bin/bash
+
+JAR=sbb-0.0.2.jar
+LOG=/home/ubuntu/sbb/sbb.log
+
+nohup java -Dspring.profiles.active=prod -jar $JAR > $LOG 2>&1 &
+==============================
+
+start.sh 수정 : 실행시 application-prod.properties 실행 
+==============================
+#!/bin/bash
+
+JAR=sbb-0.0.2.jar
+LOG=/home/ubuntu/sbb/sbb.log
+export spring_profiles_active=prod
+
+nohup java -jar $JAR > $LOG 2>&1 &
+==============================
+
+
+sbb 프로잭트를 SRV2 VM에 배포하고 , 스크립트 생성 
+	start.sh
+	stop.sh 
+
+완료 시간 : 5:30 분까지 설정 
+
+
+=================================================
+// H2 DataBase는 기본적으로 localhost:9292/h2-consol 
+
+
+
+// ls -l      <= 자세한 정보를 출력, 폴더/파일/링크 , 퍼미션(권한) , 소유주, 그룹, 언제, 용량 
+
+drwxr-x--- 4 ubuntu ubuntu 4096 Feb 22 10:04 ubuntu
+
+d: 폴더 
+-: 파일 
+l: 링크 파일 
+
+rwx rwx rwx 
+
+r : 읽기 권한 : 4 
+w : 쓰기 권한 : 2
+x : 실행 권한 : 1
+
+7 : rwx
+6 : rw-
+5 : r-x
+4 : r--
+3 : -wx
+2 : -w- 
+1 : --x
+0 : --- 
+
+
+rwx 						r-x 						---
+(소유주 권한 : 계정(ubuntu))		(그룹의 권한 : 그룹(ubuntu))   (기타 사용자 권한 : 소유주(x), 그룹(x) 
+
+//chmod : 퍼미션 수정 
+
+chmod 777 aaa.txt 		
+-rwxrwxrwx 1 ubuntu ubuntu 0 Feb 22 10:48 aaa.txt
+
+//chown 소유주와 그룹 변경 
+sudo chown root.root aaa.txt 
+-rwxrwxrwx 1 root root 0 Feb 22 10:48 aaa.txt
+
+소유주 : u 
+그룹 : g
+기타 : o 
+
+모든 (소유주, 그룹, 기타) : a
+
+
+// 80 번 포트에서 서비스 작동 : 루트 권한으로 실행해야 한다. (sudo ) 
+	//톰켓을 이렇게 80번 포트를 sudo 권한으로 실행하면 보안상 아주 큰 문제가 생긴다. 
+	//http : client와 server 의 데이터 통신을 암호화 하지 않는다. 
+	//https: client와 server를 암호화 해서 통신 한다. 
+	
+	//https 설정하기가 굉장히 복잡해 진다. 
+	
+	
+	client =====> Web Server(Nginx, Apache) ===> WAS (Tomcat, 제우스) ==> DataBase 
+	
+	//요즘은 Apache보다는 Nginx가 성능과 보안이 뛰어나서 많이 사용. 
+		
+ sudo java -Dserver.port=80 -Dspring.properties.active=prod 
+ 	-jar sbb-0.0.2-SNAPSHOT.jar &
+
+// sudo 로 실행 하게 되면 root 계정의 홈폴더에 DataBase 파일이 생성됨.  /root/local.mv.db 
+ 
+// Linux 의 계정정보를 담은 파일    /etc/passwd 
+// Linux 의 계정의 패스워드를 담은 파일    /etc/shadow 
+
+// AWS Ubuntu Linux 에서 root 계정의 암호는 부여 되어 있지 않다.< 잠겨 있다. > 
+
+su - 계정명       : 로그아웃 하지 않고 계정과 계정을 이동 
+
+//root 계정의 암호를 부여함. (root 암호 : 대문자 + 소문자 + 특수문자 + 숫자 (14자이상 부여))
+sudo passwd root 
+
+
+//nginx 웹 서버 설치 
+sudo apt install nginx 
+
+//nginx 서비스 상태 확인 
+sudo systemctl status nginx   
+
+sudo systemctl stop nginx   
+sudo systemctl start nginx   
+sudo systemctl restart nginx  
+
+//nginx 웹서버 : 80 
+홈폴더 : /var/www/html 
+기본 문서 : index.html 
+
+//nginx 를 톰켓과 연동 설정 
+cd /etc/nginx/sites-available
+
+sudo vi sbb
+======================
+server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+                proxy_pass http://localhost:9292;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header Host $http_host;
+        }
+}
+
+===============================
+
+// nginx 에서 연결 링크 구성  ( 폴더 주의 : ) 
+cd /etc/nginx/sites-enabled/
+sudo rm default
+sudo ln -s /etc/nginx/sites-available/sbb 
+
+// nginx 서비스 다시 시작 
+sudo systemctl restart nginx 
+
+
+
+실습 0223 SRV2 에서 설정 : 완료시간 6:00 까지 
+
+Client ====> Web (Ngingx) : 80  ====> WAS ( Tomcat) : 8080 
+
+=========================
+OS(Linux)는 이름으로 식별하는 것이 아니라 고유번호로 식별(계정, 그룹, 프로세스..) 
+
+PID : 프로세스에 할당되는 고유번호
+
+PPID : 부모 프로세스의 고유 번호
+
+UID : 계정에게 할당되는 고유 번호
+
+GID : 그룹에게 부여되는 고유 번호
+
+============================
+Oracle 21C XE 버전 <== 최신버전 / JDBC연결 , JPA 연동
+	JPA 연동할 때는 19C, 18C, 12C 사용
+
+기존 Oracle XE 21c 포트 : TCP 1521 
+(공유폴더 다운) Oracle XE 18C : TCP 1521로 설정 <== WS2019 VM 설치(JPA연동시 필요)
+ 
+
+// 시간 설정
+sudo date -s 2023/03/03
+date
+
+//인터넷의 time server 와 시간 동기화 
+sudo apt install rdate
+sudo rdate -s time.bora.net
+
+Loging 설정 레벨
+1. trace(1단계) : 아주 상세한 정보의 로그를 남깁니다.( debug보다 많은 정보를 남김)
+2. debug(2단계) : 디버깅을 목적으로 사용
+3. info(3단계) : 일반 정보를 출력할때 사용 		<======<<< 기본값 : default >>>>
+4. warn ( 4단계 ) : 경고 정보를 출력할 때 사용 (작은 문제) 
+5. error(5단계) : 오류 정보를 출력 할때 사용(큰문제)
+6. fatal(6단계) : 치명적인 오류를 출력할 때 사용 (kernal 에서 발생되는 문제)
+
+trace < debug < info < warn < error < fatal
+
+
+http : client와 Server 사이의 암호화를 지원하지 않고 통신 : TCP 80번 포트
+https : Client와 Server 사이의 암호화 통신 : TCP 443
+	- 반드시 도메인 이름을 사용해야 한다. www.naver.com 
+	- 인증서를 웹서버에 설치해서 구성해야 한다. : 도메인 이름으로 매핑.
+	- 인증서 설치 시 도메인 이름을 등록한다.
+	- 인증 기관에서 인증서를 구매해서 사용함
+	
+		무료 인증서를 설치테스트 환경에서 사용
+		
+	--------------------------------------------
+	1. 도메인 이름을 IP로 연결 (도메인 구매 후 DNS Server)
+		C:\Windows\System32\drivers\etc
+		3.34.144.40 lhy.kr www.lhy.kr
+	
+	2. 웹서버 인증서를 설치 (무료 인증서 설치)
+		sudo apt install certbot
+		sudo apt install python3-certbot-nginx
+	
+	3. 인증서 서버에서 인증서를 발급받아야 한다.
+		sudo certbot certonly --nginx
+		-> 메일 주소 입력하기..aaa@aaa.com
+		라이센스 동의 여부 - > 동의여부 - > 도메인 이름 
+	
+	4. 도메인 구매 후 라우트 53에서 DNS Server 구성
+	 	가비아 ,도레지 ( www. doregi.com), 아이네임즈 ...
+	 	
+	인터닉 : www.internic.net < = 전 세계의 도메인을 관리하는 단체
+	
+	도메인 등록 : www.doregi.com
+	
+	DNS Server (114) : 도메인 이름을 ==> IP Address
+				www.naver.com ===> IP Address
+					
+				호스트 이름 + 도메인 이름 <== FQDN (전체 컴퓨터 이름)
+				www. 		naver.com 	(웹서버)
+				ftp.		naver.com 	(ftp서버)
+				smtp.		naver.com 	(메일 송신 서버)
+				pop.		naver.com 	(메일 수신 서버)
+				
+	ZONE (영역) :	DNS DataBase( naver.com ) 
+		레코드(Record) : NS, SOA <-- 자동으로 생성됨
+		A : 호스트 이름을 IP Address로 연결( IPv4)
+		CNAME : 호스트 이름을 다른 호스트 이름으로 연결
+		PTR : IP Address를 호스트 이름으로 연결
+		
+	
+				
+// 계정 설정
+
+$ su - root
+sudo 
+$ usermod -aG docker ubuntu 			// vi /etc/group
+	ubuntu 계정을 docker 그룹에 포함한다.
+	현재 로그온한 계정이 docker그룹에 포함되어 있어야 docker의 기능을 사용할 수 있는 권한을 가진다.
+
+	
+docker run -d -p 1521:1521 -e ORACLE_PASSWORD=1234 -v oracle-volume:/opt/oracle/oradata gvenzl/oracle-xe
+	
+	
+docker run -d -p 1521:1521 -e ORACLE_PASSWORD=1234 gvenzl/oracle-xe
+
+docker ps -a : docker 위에 작동중인 모든 컨테이너를 출력
+docker stop container id : 도커 컨테이너 중지
+docker rm < container ID> : 컨테이너 제거
+
+//도커 이미지 삭제
+docker images
+sudo docker rmi container id
+//rm = 컨테이너 삭제, rmi = 컨테이너 이미지 삭제
+
+sudo mkdir /opt/oracle
+
+
+sudo ufw disabler // 우분투 방화벽 제거 
+
+//모든 도커 컨테이너 , 도커 이미지 한번에 제거
+
+docker rm -f $(docker ps -a -q) && docker rmi -f $(docker images -q)
+
+
+docker run -d -p 1521:1521 -e ORACLE_PASSWORD=1234 gvenzl/oracle-xe
+
+//docker run = docker pull (원격의 도커 허브에서 이미지 다운로드)
+ 		+ docker build (로컬의 다운 된 도커이미지를 RAM에 올려줌)
+
+// -d : 도커 컨테이너를 백그라운드 모드로 작동 시킴. d옵션을 주지 않으면.. fore ground로 작성 됨.. 
+// -p 1521:1521		
+		-p : 포트 매핑
+		1521 : (호스트의 포트) 
+		:1521  : (컨테이너 포트)
+// -e ORACLE_PASSWORLD=1234
+	-e : 환경설정,
+	ORACLE_PASSWORD=system계정의 패스워드
+// gvenzl/oracle-xe : 계정명/이미지명, 이미지 이름 뒤에 버전이 명시되지 않으면 최신버전이 적용(latest)
+		//hub.docker.com : 도커 이미지가 저장된 public 레퍼지토리
+		
+// 도커 컨테이너의 상세한 정보를 확인
+docker ps -a // 도커 컨테이너 ID를 확인할 수 있다.
+docker inspect 컨테이너 아이디 	// 
+
+// 도커의 이미지가 저장된 디렉토리
+/var/lib/docker/overlay2/
+
+IP Address (Network ID + Host ID)
+	IPv4 : 8bit.8bit.8bit.8bit : 32bit
+		   옥텟. 옥텟. 옥텟. 옥텟
+		   255.255.255.255
+		   
+	NetWork ID : 그 회사의 NetWork를 뜻한다. (우편번호)
+	Host ID : 그 회사의 NetWork 안의 각각의 시스템( 번지)
+
+CIDR 표기법 : IP/SM	
+	172.31.10.42/24 : IP 주소 / Subnet Mask( 1이 할당된 비트 수)
+	
+	NetWork ID : 172.31.10
+	HOST ID : 42
+	
+	172.16.0.1/16
+	NetWork ID : 172.16
+	Host ID : 0.1
+	
+1. lo : 자신의 시스템을 가르키는 루프백 IP 
+2. eht0 : 실제 Host 시스템의 LAN Card, (eth0 (AWS), ens33 (Local VM) 
+3. docker0 : Host 에서 Docker 를 설치히 도커 컨테이너와 통신하고 컨테이너에게 할당되는 ip 대역
+
+
+		

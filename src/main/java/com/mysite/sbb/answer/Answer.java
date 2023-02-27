@@ -24,7 +24,8 @@ public class Answer { //테이블이름 . DTO
 	@GeneratedValue(strategy=GenerationType.IDENTITY) // identity 옵션 = 자동증가 
 	private Integer id;		// Primary Key, 자동증가( 초기값 1, 증가값 1)
 	
-	@Column(columnDefinition = "TEXT")
+	//@Column(columnDefinition = "TEXT")
+	@Column(length=4000) //오라클은 text 가 없음..
 	private String content;
 	
 
